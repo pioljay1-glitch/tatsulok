@@ -1,46 +1,22 @@
-# TATSULOK — Lobby Character Concept Deck
+# TATSULOK — 3D Ritual
 
-Interactive concept deck for the **TATSULOK** puzzle game.
+Browser 3D puzzle about power. Philippine political mystery.
 
-Tema: Philippine political mystery, kapangyarihan, misteryo, at demokrasya.
-
+**Play:** https://pioljay1-glitch.github.io/tatsulok/
 **Repo:** https://github.com/pioljay1-glitch/tatsulok
 
-**Live (after you turn on GitHub Pages):** https://pioljay1-glitch.github.io/tatsulok/
+## Controls
 
-## Features
+- Enter name + pick a character in the lobby
+- Click the scene to lock the mouse
+- **WASD** walk
+- **E** confront a glowing node (Baha, Lindol, Pang-aalipin)
+- Every choice shifts **LOOB** (will/power) vs **PUSO** (heart)
 
-- 10-slide interactive concept deck
-- Lobby / Menu system (Start / Ready)
-- Character categories: Panginoon, Malakas, Mabuti
-- Character dossier (dynamic)
-- Character select screen
-- Keyboard navigation (← →)
-- Responsive design
+## Stack
 
-## How to Use
+Static site. Three.js from CDN. Works on GitHub Pages — no server.
 
-1. Open `index.html` in a browser, or the GitHub Pages URL.
-2. Use ← → or the dots to navigate.
-3. In the Lobby slide, enter a name → Start → Ready.
-4. Pick a character on slide 04 or 09 to open the dossier.
+## Pages
 
-## Publish (GitHub Pages)
-
-1. Open the repo → **Settings** → **Pages**.
-2. Source: **Deploy from a branch**.
-3. Branch: `main` / folder `/ (root)` → Save.
-4. Wait ~1 minute, then open https://pioljay1-glitch.github.io/tatsulok/
-
-## Assets
-
-Upload portraits to `/assets` if you want images wired in later:
-
-- peyudo.png, misteryo.png, bangag.jpg, pula.png, tanikala.png
-- presyo.png, pintuan.png
-- ling.JPG, batid.png, tisa.jpg
-- tatsulok-concept-board.png
-
-## Credits
-
-Concept & Design: TATSULOK Team
+Settings → Pages → Deploy from branch `main` / root.
