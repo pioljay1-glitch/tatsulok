@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TATSULOK — Lobby Character Concept Deck</title>
+  <style>
+    :root {
+      --bg: #07080c;
+      --gold: #d4b46a;
+      --gold-soft: #f0d9a0;
+      --red: #c43c3c;
+      --teal: #6aa8a0;
+      --panel: rgba(10,12,18,.72);
+      --line: rgba(212,180,106,.28);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: var(--bg); color: #eee6d6; font-family: "Cinzel", "Times New Roman", serif; }
+    body {
+      background:
+        radial-gradient(ellipse at 50% 0%, #1a1d28 0%, #07080c 55%),
+        #07080c;
+      overflow: hidden;
+    }
+    .frame { height: 100%; display: flex; flex-direction: column; }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 22px; border-bottom: 1px solid var(--line);
+      background: rgba(0,0,0,.35);
+    }
+    .brand { letter-spacing: .28em; font-size: 13px; color: var(--gold); }
+    .nav { display: flex; gap: 8px; align-items: center; }
+    button, .btn {
+      background: transparent; color: var(--gold-soft);
+      border: 1px solid var(--line); padding: 7px 12px; cursor: pointer;
+      letter-spacing: .08em; font-family: inherit;
+    }
+    button:hover { border-color: var(--gold); }
+    .slides { flex: 1; position: relative; overflow: hidden; }
+    .slide {
+      position: absolute; inset: 0; padding: 28px 36px 70px;
+      opacity: 0; pointer-events: none; transform: translateX(30px);
+      transition: .45s ease;
+      overflow: auto;
+    }
+    .slide.active { opacity: 1; pointer-events: auto; transform: none; }
+    h1 { font-size: clamp(28px, 4vw, 54px); color: var(--gold); letter-spacing: .12em; }
+    h2 { color: var(--gold-soft); letter-spacing: .16em; font-size: 20px; margin-bottom: 14px; }
+    p, li { font-family: "Source Sans 3", "Segoe UI", sans-serif; line-height: 1.55; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+    .card {
+      border: 1px solid var(--line); background: var(--panel);
+      padding: 14px; min-height: 120px;
+    }
+    .card h3 { color: var(--gold); font-size: 14px; letter-spacing: .14em; margin-bottom: 6px; }
+    .tiny { font-size: 12px; color: #c9c0ae; font-family: "Source Sans 3", sans-serif; }
+    .dots {
+      position: absolute; bottom: 18px; left: 0; right: 0;
+      display: flex; justify-content: center; gap: 8px;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #3a3a42; cursor: pointer; }
+    .dot.on { background: var(--gold); }
+    .lobby {
+      max-width: 420px; margin: 40px auto; text-align: center;
+      border: 1px solid var(--line); padding: 28px; background: var(--panel);
+    }
+    input {
+      width: 100%; margin: 12px 0 18px; padding: 10px 12px;
+      background: #0c0e14; border: 1px solid var(--line); color: #eee6d6;
+      font-family: inherit; letter-spacing: .08em;
+    }
+    .row { display: flex; gap: 10px; justify-content: center; }
+    .start { border-color: var(--gold); }
+    .ready { background: var(--red); border-color: var(--red); color: #fff; }
+    .ready[disabled] { opacity: .4; cursor: not-allowed; }
+    .char { cursor: pointer; transition: .2s; }
+    .char:hover, .char.sel { outline: 1px solid var(--gold); }
+    .dossier {
+      display: none; margin-top: 16px; border-top: 1px solid var(--line); padding-top: 14px;
+    }
+    .dossier.show { display: block; }
+    footer.note, .footer.note { margin-top: 18px; font-size: 13px; color: #b7ad97; font-family: "Source Sans 3", sans-serif; }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="frame">
+    <header>
+      <div class="brand">TATSULOK · CONCEPT DECK</div>
+      <div class="nav">
+        <button id="prev">←</button>
+        <span id="pos" class="tiny">01 / 10</span>
+        <button id="next">→</button>
+      </div>
+    </header>
+    <div class="slides" id="slides"></div>
+    <div class="dots" id="dots"></div>
+  </div>
+<script>
+const CHARS = {
+  peyudo: { name:'PEYUDO', faction:'Panginoon', blurb:'Mabilis. Mayaman. Tanyag. Makapangyarihan. Panginaling puwersa ng Panginoon.' },
+  misteryo: { name:'MISTERYO', faction:'Panginoon', blurb:'Huwes na dumadaan sa dahas. Pumapatay at kumuha ng hustisya.' },
+  bangag: { name:'BANGAG', faction:'Panginoon', blurb:'Magulong kapangyarihang nakaupo sa trono. Baliw, malaki, nakaupo.' },
+  pula: { name:'PULA', faction:'Panginoon', blurb:'Kamay na bakal sa mga simulain na pumupunit.' },
+  tanikala: { name:'TANIKALA', faction:'Panginoon', blurb:'Tagasunod na nagbubuklod sa sistema. Kadena, kandado, bungo.' },
+  presyo: { name:'PRESYO', faction:'Malakas', blurb:'Gumagamit ng hipnotismo. Bawat desisyon ay may kapalit.' },
+  pintuan: { name:'PINTUAN', faction:'Malakas', blurb:'Trangkahan na maaaring magmanipula ng tadhana.' },
+  ling: { name:'LING', faction:'Mabuti', blurb:'Tagapagpagaling. Puso, iisip, at kabutihan.' },
+  batid: { name:'BATID', faction:'Mabuti', blurb:'Kumakatawan sa edukasyon. Aklat at liwanag.' },
+  tisa: { name:'TISA', faction:'Mabuti', blurb:'Kumakatawan sa pagtatanim. Lupa at buhay.' },
+  subalit: { name:'SUBALIT', faction:'Mabuti', blurb:'Lumalaban batay sa puso, iisip, at kabutihan.' }
+};
+
+const slides = [
+  `<section class="slide active">
+    <h2>01 · LOBBY CHARACTER / CONCEPT DECK</h2>
+    <h1>TATSULOK</h1>
+    <p class="tiny" style="margin:12px 0 20px">A puzzle game about power · Philippine political mystery</p>
+    <p>Isang puzzle game tungkol sa kapangyarihan, misteryo, korapsyon, katuwiran, at demokrasya.</p>
+    <p class="footer note">Tatlong panig. Isang misteryo. Bawat lakas ay may kapalit.</p>
+  </section>`,
+  `<section class="slide">
+    <h2>02 · WORLD PREMISE</h2>
+    <h1>ANG MUNDO NG TATSULOK</h1>
+    <div class="cards" style="margin-top:20px">
+      <div class="card"><h3>PANGINOON</h3><p class="tiny">Kapangyarihan at kontrol</p></div>
+      <div class="card"><h3>MALAKAS</h3><p class="tiny">Puwersang nagbabago ng tadhana</p></div>
+      <div class="card"><h3>MABUTI</h3><p class="tiny">Puso, iisip, at kabutihan</p></div>
+    </div>
+    <p class="footer note">Mga temang haharapin: Baha · Lindol · Korapsyon · Pang-aalipin</p>
+  </section>`,
+  `<section class="slide">
+    <h2>03 · LOBBY / MENU</h2>
+    <div class="lobby">
+      <div class="tiny">SYSTEM WAITING FOR PLAYER</div>
+      <input id="pname" placeholder="ENTER YOUR NAME" maxlength="24" />
+      <div class="row">
+        <button class="start" id="btnStart">START</button>
+        <button class="ready" id="btnReady" disabled>READY</button>
+      </div>
+      <p class="tiny" id="lobbyMsg" style="margin-top:14px">Ilagay ang pangalan para makapasok.</p>
+    </div>
+  </section>`,
+  `<section class="slide">
+    <h2>04 · FACTION 01 / BRASS</h2>
+    <h1>PANGINOON NA KARAKTER</h1>
+    <div class="cards" style="margin-top:18px" id="f4"></div>
+    <div class="dossier" id="d4"></div>
+  </section>`,
+  `<section class="slide">
+    <h2>05 · PANGINOON / 01</h2>
+    <h1>PEYUDO</h1>
+    <p class="tiny">MABILIS. MAYAMAN. TANYAG. MAKAPANGYARIHAN.</p>
+    <p style="margin-top:16px">Papel: Panginaling puwersa ng Panginoon.<br>Lakas: Bilis, yaman, impluwensya.<br>Simbolo: Marais na posisyon sa tatsulok.</p>
+  </section>`,
+  `<section class="slide">
+    <h2>06 · PANGINOON / 02–05</h2>
+    <div class="cards" id="f6"></div>
+  </section>`,
+  `<section class="slide">
+    <h2>07 · FACTION 02 / RED</h2>
+    <h1>MALAKAS NA KARAKTER</h1>
+    <div class="cards" style="margin-top:18px">
+      <div class="card char" data-id="presyo"><h3>PRESYO</h3><p class="tiny">Gumagamit ng hipnotismo. Bawat desisyon ay may kapalit.</p></div>
+      <div class="card char" data-id="pintuan"><h3>PINTUAN</h3><p class="tiny">Trangkahan na maaaring magmanipula ng tadhana.</p></div>
+    </div>
+    <p class="footer note">Sila ang nagbabago ng direksiyon ng laban. Ang bawat desisyon ay may kapalit.</p>
+  </section>`,
+  `<section class="slide">
+    <h2>08 · FACTION 03 / TEAL</h2>
+    <h1>MABUTING KARAKTER</h1>
+    <div class="cards" style="margin-top:18px" id="f8"></div>
+  </section>`,
+  `<section class="slide">
+    <h2>09 · PILIIN ANG IYONG KARAKTER</h2>
+    <p class="tiny">Libre ang lahat ng karakter. Ipukita ang dossier bago piliin.</p>
+    <div class="cards" style="margin-top:16px" id="f9"></div>
+    <div class="dossier" id="d9"></div>
+  </section>`,
+  `<section class="slide">
+    <h2>10 · START. READY. HARAPIN ANG MISYON.</h2>
+    <ol style="margin:16px 0 16px 20px; font-family:'Source Sans 3',sans-serif">
+      <li>Pumasok sa lobby</li>
+      <li>Pumili ng karakter</li>
+      <li>Mag-Ready</li>
+      <li>Harapin ang baha, lindol, korapsyon, at pang-aalipin</li>
+      <li>Simulan ang tunay na laro</li>
+    </ol>
+    <p>ANG TATSULOK AY HINDI LANG LABAN NG LAKAS — LABAN DIN ITO NG PANININDIGAN.</p>
+  </section>`
+];
+
+const root = document.getElementById('slides');
+root.innerHTML = slides.join('');
+
+function fill(id, keys){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = keys.map(k => `<div class="card char" data-id="${k}"><h3>${CHARS[k].name}</h3><p class="tiny">${CHARS[k].blurb}</p></div>`).join('');
+}
+fill('f4', ['peyudo','misteryo','bangag','pula','tanikala']);
+fill('f6', ['misteryo','bangag','pula','tanikala']);
+fill('f8', ['ling','batid','tisa','subalit']);
+document.getElementById('f9').innerHTML = Object.keys(CHARS).map(k =>
+  `<div class="card char" data-id="${k}"><h3>${CHARS[k].name}</h3><p class="tiny">${CHARS[k].faction}</p></div>`
+).join('');
+
+const all = [...root.querySelectorAll('.slide')];
+const dots = document.getElementById('dots');
+all.forEach((_, n) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (n===0?' on':'');
+  d.onclick = () => go(n);
+  dots.appendChild(d);
+});
+let i = 0;
+function go(n){
+  i = (n + all.length) % all.length;
+  all.forEach((s,k)=>s.classList.toggle('active', k===i));
+  [...dots.children].forEach((d,k)=>d.classList.toggle('on', k===i));
+  document.getElementById('pos').textContent = String(i+1).padStart(2,'0') + ' / 10';
+}
+document.getElementById('prev').onclick = () => go(i-1);
+document.getElementById('next').onclick = () => go(i+1);
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') go(i+1);
+  if (e.key === 'ArrowLeft') go(i-1);
+});
+
+const start = document.getElementById('btnStart');
+const ready = document.getElementById('btnReady');
+const input = document.getElementById('pname');
+const msg = document.getElementById('lobbyMsg');
+start.onclick = () => {
+  const name = (input.value || '').trim();
+  if (!name) { msg.textContent = 'Kailangan ng pangalan.'; return; }
+  localStorage.setItem('tatsulok_player', name);
+  ready.disabled = false;
+  msg.textContent = `Maligayang pagdating, ${name}. Pindutin ang READY.`;
+};
+ready.onclick = () => go(3);
+
+function showDossier(el, id){
+  const c = CHARS[id];
+  if (!el || !c) return;
+  el.classList.add('show');
+  el.innerHTML = `<h3 style="color:var(--gold)">${c.name}</h3><p class="tiny">${c.faction}</p><p style="margin-top:8px">${c.blurb}</p>`;
+}
+document.querySelectorAll('.char').forEach(card => {
+  card.onclick = () => {
+    document.querySelectorAll('.char').forEach(c => c.classList.remove('sel'));
+    card.classList.add('sel');
+    const id = card.dataset.id;
+    localStorage.setItem('tatsulok_char', id);
+    showDossier(document.getElementById('d4'), id);
+    showDossier(document.getElementById('d9'), id);
+  };
+});
+</script>
+</body>
+</html>
