@@ -1,22 +1,37 @@
-# TATSULOK — 3D Ritual
+# TATSULOK
 
-Browser 3D puzzle about power. Philippine political mystery.
+Interactive first-person 3D puzzle game about power, mystery, corruption, development, and democracy.
 
-**Play:** https://pioljay1-glitch.github.io/tatsulok/
-**Repo:** https://github.com/pioljay1-glitch/tatsulok
+This is the playable rebuild of the TATSULOK prototype: lobby, characters, dossiers, factions, missions, and a **true first-person 3D district**.
 
-## Controls
+## Play locally
 
-- Enter name + pick a character in the lobby
-- Click the scene to lock the mouse
-- **WASD** walk
-- **E** confront a glowing node (Baha, Lindol, Pang-aalipin)
-- Every choice shifts **LOOB** (will/power) vs **PUSO** (heart)
+```bash
+npm install
+npm run dev
+```
 
-## Stack
+Open the Vite URL. Choose a character, open a mission, click the district to look around.
 
-Static site. Three.js from CDN. Works on GitHub Pages — no server.
+### Controls
 
-## Pages
+- Desktop: click to capture mouse look, WASD move, Shift run, E interact
+- Mobile / iPad: left joystick move, drag to look, RUN / INTERACT buttons
+- BACK returns to the mission list without a full reload
 
-Settings → Pages → Deploy from branch `main` / root.
+## Mission 01
+
+Flooded street → survivor → clue → blocked road → side street → supplies → evacuation center → choice.
+
+Choices are saved in `localStorage` (`tatsulok-choices`).
+
+## Deploy
+
+Vite static site. On Render / Vercel / Netlify:
+
+- Build: `npm run build`
+- Publish: `dist`
+
+Character portraits and audio load from the original public assets on GitHub so this repo stays small.
+
+Status: playable first-person prototype.

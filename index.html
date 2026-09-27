@@ -1,86 +1,19 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TATSULOK — 3D Ritual</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    :root { --gold:#d4b46a; --ink:#08090d; --red:#9c2d2d; }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    html,body { height:100%; background:var(--ink); color:#eee6d6; font-family:"Source Sans 3",sans-serif; overflow:hidden; }
-    canvas { display:block; width:100%; height:100%; }
-    #lobby, #modal, #hud, #hint, #toast, #prompt { position:fixed; z-index:5; }
-    #lobby {
-      inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-      background: radial-gradient(ellipse at 50% 20%, #1c1a16 0%, #08090d 60%);
-      padding:24px; overflow:auto;
-    }
-    #lobby.hide, .hide { display:none !important; }
-    h1 { font-family:Cinzel,serif; letter-spacing:.22em; color:var(--gold); font-size:clamp(28px,5vw,56px); }
-    .sub { letter-spacing:.18em; color:#b7ad97; margin:8px 0 22px; font-size:12px; }
-    input {
-      width:min(420px,90vw); padding:12px 14px; margin-bottom:16px;
-      background:#101218; border:1px solid rgba(212,180,106,.35); color:#eee6d6;
-      font-family:Cinzel,serif; letter-spacing:.1em;
-    }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px; width:min(720px,94vw); margin-bottom:18px; }
-    .chip {
-      text-align:left; padding:10px; background:#12141c; color:#eee6d6;
-      border:1px solid rgba(212,180,106,.25); cursor:pointer; font-family:inherit;
-    }
-    .chip b { display:block; font-family:Cinzel,serif; font-size:12px; color:var(--gold); }
-    .chip span { font-size:11px; color:#9a9284; }
-    .chip.on { outline:1px solid var(--gold); background:#1a1710; }
-    #enterBtn, #choiceA, #choiceB {
-      font-family:Cinzel,serif; letter-spacing:.14em; cursor:pointer;
-      padding:10px 18px; border:1px solid var(--gold); background:transparent; color:var(--gold);
-    }
-    #choiceB { border-color:var(--red); color:#f0c8c8; }
-    #hud { top:14px; left:16px; right:16px; display:flex; justify-content:space-between; pointer-events:none; font-family:Cinzel,serif; letter-spacing:.12em; font-size:13px; color:var(--gold); }
-    #hint {
-      left:50%; bottom:28px; transform:translateX(-50%);
-      border:1px solid rgba(212,180,106,.35); padding:10px 16px; background:rgba(8,9,13,.7);
-    }
-    #prompt { left:50%; bottom:22px; transform:translateX(-50%); font-family:Cinzel,serif; letter-spacing:.16em; color:var(--gold); }
-    #toast {
-      top:72px; left:50%; transform:translateX(-50%); max-width:520px; text-align:center;
-      background:rgba(8,9,13,.85); border:1px solid rgba(212,180,106,.3); padding:12px 16px;
-    }
-    #modal { inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.55); }
-    .sheet { width:min(460px,92vw); background:#101218; border:1px solid rgba(212,180,106,.35); padding:22px; }
-    .sheet h2 { font-family:Cinzel,serif; color:var(--gold); letter-spacing:.16em; margin-bottom:10px; }
-    .row { display:flex; gap:10px; margin-top:16px; }
-  </style>
-</head>
-<body>
-  <canvas id="view"></canvas>
-  <div id="lobby">
-    <h1>TATSULOK</h1>
-    <div class="sub">TATLONG PANIG · ISANG RITWAL · 3D</div>
-    <input id="pname" maxlength="24" placeholder="PANGALAN" />
-    <div class="grid" id="charGrid"></div>
-    <button id="enterBtn">START · READY</button>
-    <p id="lobbyHint" class="sub" style="margin-top:14px">Pumili ng karakter. WASD + mouse sa loob ng plaza.</p>
-  </div>
-  <div id="hud" class="hide">
-    <div id="hudName"></div>
-    <div><span id="hudWill"></span> &nbsp; <span id="hudHeart"></span></div>
-  </div>
-  <div id="hint">CLICK PARA TUMINGIN · WASD GALAW · E HARAPIN</div>
-  <div id="prompt"></div>
-  <div id="toast" class="hide"></div>
-  <div id="modal" class="hide">
-    <div class="sheet">
-      <h2 id="modalTitle"></h2>
-      <p id="modalBody"></p>
-      <div class="row">
-        <button id="choiceA"></button>
-        <button id="choiceB"></button>
-      </div>
-    </div>
-  </div>
-  <script type="module" src="./game.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="TATSULOK — Interactive First-Person 3D Puzzle Game"
+    />
+    <title>TATSULOK</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
